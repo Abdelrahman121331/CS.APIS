@@ -24,7 +24,7 @@ namespace API.Helpers
                   .ForMember(d => d.Students, o => o.MapFrom(s => s.Students.St_NameAr)).ReverseMap();
 
             CreateMap<Attendance_T, AttendanceDTO>()
-                 .ForMember(d => d.Lecture, o => o.MapFrom(s => s.Lecture.Lecture_Num)).ReverseMap();
+                 .ForMember(d => d.Lecture, o => o.MapFrom(s => s.Lecture.Lecture_Name)).ReverseMap();
 
             CreateMap<FacultyYear, FacultyYearDTO>()
                 .ForMember(d => d.Faculty, o => o.MapFrom(s => s.Faculty.Fac_Name)).ReverseMap();

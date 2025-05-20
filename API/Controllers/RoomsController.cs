@@ -17,7 +17,7 @@ namespace API.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public RoomsController(IUnitOfWork unitOfWork,IMapper mapper)
+        public RoomsController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -51,11 +51,17 @@ namespace API.Controllers
         }
 
         [HttpPost("Add_OR_UpdateRoom")]
-        public async Task<ActionResult<Rooms>> AddRoom(Rooms Rooms)
+        public async Task<ActionResult<Rooms>> AddRoom(RoomsDTO Rooms)
         {
+
+            var mapproom = new Rooms
+            {
+                ID = Rooms.ID,
+                Room_Num =Rooms.Room_Num
+            };
             if (Rooms.ID != 0)
             {
-                var data = await _unitOfWork.Repository<Rooms>().UpdateAsync(Rooms);
+                var data = await _unitOfWork.Repository<Rooms>().UpdateAsync(mapproom);
                 if (data is null) return BadRequest(new ApiResponse(400));
                 await _unitOfWork.CompleteAsync();
                 return Ok(data);
@@ -63,7 +69,7 @@ namespace API.Controllers
             else
             {
                 Rooms.ID = 0;
-                var data = await _unitOfWork.Repository<Rooms>().AddAsync(Rooms);
+                var data = await _unitOfWork.Repository<Rooms>().AddAsync(mapproom);
                 if (data is null) return BadRequest(new ApiResponse(400));
                 await _unitOfWork.CompleteAsync();
                 return Ok(data);

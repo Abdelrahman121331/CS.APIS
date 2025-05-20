@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.FingerId;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
@@ -15,7 +16,8 @@ namespace Core.Entities
         public string St_NameEn { get; set; }
         public string St_Email { get; set; }
         public string St_Image { get; set; }
-        public string Phone { get; set; }
+        public string Phone { get; set; } 
+        public int? FingerID { get; set; } 
 
         //**********************************************************  
         [ForeignKey(nameof(Faculty))]

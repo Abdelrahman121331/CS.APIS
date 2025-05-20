@@ -12,7 +12,7 @@ using Repository.Data;
 namespace Repository.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20250516160539_IntaialMigrations")]
+    [Migration("20250520195650_IntaialMigrations")]
     partial class IntaialMigrations
     {
         /// <inheritdoc />
@@ -198,7 +198,7 @@ namespace Repository.Data.Migrations
                     b.Property<DateTime>("LectureDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Lecture_Num")
+                    b.Property<string>("Lecture_Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -251,6 +251,9 @@ namespace Repository.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Fac_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FingerID")
                         .HasColumnType("int");
 
                     b.Property<string>("Phone")
@@ -339,6 +342,26 @@ namespace Repository.Data.Migrations
                     b.HasIndex("Ins_ID");
 
                     b.ToTable("Subjects");
+                });
+
+            modelBuilder.Entity("Core.FingerId.SensorData", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("SensorData");
                 });
 
             modelBuilder.Entity("Core.Entities.Attendance_T", b =>

@@ -73,6 +73,20 @@ namespace Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SensorData",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SensorData", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FacultyYear",
                 columns: table => new
                 {
@@ -125,6 +139,7 @@ namespace Repository.Data.Migrations
                     St_Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     St_Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FingerID = table.Column<int>(type: "int", nullable: true),
                     Fac_ID = table.Column<int>(type: "int", nullable: false),
                     FacYearSem_ID = table.Column<int>(type: "int", nullable: false)
                 },
@@ -211,7 +226,7 @@ namespace Repository.Data.Migrations
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Lecture_Num = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Lecture_Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     St_ID = table.Column<int>(type: "int", nullable: false),
                     Room_ID = table.Column<int>(type: "int", nullable: false),
                     Sub_ID = table.Column<int>(type: "int", nullable: false),
@@ -333,6 +348,9 @@ namespace Repository.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Attendance");
+
+            migrationBuilder.DropTable(
+                name: "SensorData");
 
             migrationBuilder.DropTable(
                 name: "Studets_Rooms");

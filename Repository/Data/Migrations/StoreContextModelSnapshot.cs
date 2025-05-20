@@ -195,7 +195,7 @@ namespace Repository.Data.Migrations
                     b.Property<DateTime>("LectureDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Lecture_Num")
+                    b.Property<string>("Lecture_Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -248,6 +248,9 @@ namespace Repository.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Fac_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FingerID")
                         .HasColumnType("int");
 
                     b.Property<string>("Phone")
