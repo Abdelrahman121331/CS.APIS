@@ -1,5 +1,4 @@
-
-using Core.Repositories.Contract;
+﻿using Core.Repositories.Contract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repository;
@@ -22,28 +21,35 @@ namespace API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
             builder.Services.AddDbContext<StoreContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-
             });
+
             builder.Services.AddDbContext<AppIdentityDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
-
             });
-            builder.Services.AddApplicationServices(); //Extensions Methods
 
-            builder.Services.AddIdentity<AppUser, IdentityRole>(Options =>
+            builder.Services.AddApplicationServices();
+
+            builder.Services.AddIdentity<AppUser, IdentityRole>(Options => { })
+                    .AddEntityFrameworkStores<AppIdentityDbContext>();
+
+            // ✅ Add CORS
+            builder.Services.AddCors(options =>
             {
-
-            }).AddEntityFrameworkStores<AppIdentityDbContext>(); 
+                options.AddPolicy("AllowReactApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:3000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             builder.Services.AddAuthentication().AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, Options =>
             {
@@ -59,46 +65,49 @@ namespace API
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Authkey"] ?? string.Empty))
                 };
             });
+
+            builder.WebHost.UseUrls("http://localhost:7069");
             var app = builder.Build();
 
-            // update database
+
             using var scop = app.Services.CreateScope();
             var Services = scop.ServiceProvider;
-            var _dbcontext = Services.GetRequiredService<StoreContext>(); // Ask CLR Explicitly StoreContext
-            var _IdentityDbContext = Services.GetRequiredService<AppIdentityDbContext>(); // Explicitly AppIdentityDbContext
+            var _dbcontext = Services.GetRequiredService<StoreContext>();
+            var _IdentityDbContext = Services.GetRequiredService<AppIdentityDbContext>();
             var _userManger = Services.GetRequiredService<UserManager<AppUser>>();
-
             var LoggerFactory = Services.GetRequiredService<ILoggerFactory>();
+
             try
             {
-                await _dbcontext.Database.MigrateAsync();// update database
-                await _IdentityDbContext.Database.MigrateAsync(); // update Identity database
+                await _dbcontext.Database.MigrateAsync();
+                await _IdentityDbContext.Database.MigrateAsync();
                 await AppIdentityDbContextSeed.SeedUserAsync(_userManger);
-
-
             }
             catch (Exception ex)
             {
                 var logger = LoggerFactory.CreateLogger<Program>();
-                logger.LogError(ex, "an error occurred during migration");
+                logger.LogError(ex, "An error occurred during migration");
             }
 
             app.UseMiddleware<ExcptionMiddleWare>();
-            // Configure the HTTP request pipeline.
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseStatusCodePagesWithReExecute("/Errors/{0}");
 
+            app.UseStatusCodePagesWithReExecute("/Errors/{0}");
             app.UseHttpsRedirection();
 
+            // ✅ Use CORS before authorization
+            app.UseCors("AllowReactApp");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseStaticFiles(); // import
+            app.UseStaticFiles();
             app.MapControllers();
-
             app.Run();
         }
     }

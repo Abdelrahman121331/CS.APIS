@@ -11,8 +11,7 @@ namespace API.DTOs
         public string Email { set; get; }
         [Required]
         public string PhoneNumber { set; get; }
-        [Required]
-        // [RegularExpression(@"^(?=.[A-Za-z])(?=.\d)(?=.[@$!%#?&])[A-Za-z\d@$!%*#?&]{8,}$", ErrorMessage ="Invalid Password")]
+        [Required] 
         public string Password { set; get; }
     }
 }

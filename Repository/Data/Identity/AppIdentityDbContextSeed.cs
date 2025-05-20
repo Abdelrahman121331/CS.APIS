@@ -17,7 +17,7 @@ namespace Project.Repository.Data.Identity
             var user = new AppUser() 
             {
                 DisplayName ="Yousef Ayman",
-                Email="yousefxbx12@gmail.com",
+                Email= "doctor@example.com",
                 UserName="yousef_ayamn",
                 PhoneNumber="01117811572"
             }; 
